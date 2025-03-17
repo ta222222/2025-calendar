@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Interactive Calendar</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono&display=swap" rel="stylesheet">
+<style>* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #000;
+    color: #fff;
+    font-family: 'Space Mono', monospace;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    flex-direction: column;
+    text-align: center;
+}
+
+.container {
+    width: 80%;
+    max-width: 900px;
+}
+
+header {
+    margin-bottom: 20px;
+}
+
+h1 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+}
+
+#current-date-time {
+    font-size: 1.2rem;
+}
+
+.calendar-container {
+    margin-top: 30px;
+}
+
+#calendar {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    grid-gap: 5px;
+    justify-content: center;
+    text-align: center;
+}
+
+#calendar div {
+    padding: 10px;
+    font-size: 1.1rem;
+    border: 1px solid #fff;
+    transition: background-color 0.3s;
+}
+
+#calendar div:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.key-date {
+    background-color: red;
+    color: white;
+    font-weight: bold;
+}
+
+.today {
+    background-color: rgba(0, 255, 0, 0.3);
+}
+</style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>2025 Calendar</h1>
+            <p id="current-date-time"></p>
+        </header>
+        
+        <div class="calendar-container">
+            <div id="calendar"></div>
+        </div>
+    </div>
+
+    <script>// Get current date and time
+function updateDateTime() {
+    const now = new Date();
+    const dateTimeElement = document.getElementById('current-date-time');
+    dateTimeElement.innerHTML = `Current Date and Time: ${now.toLocaleString()}`;
+}
+
+// Create and display the calendar
+function generateCalendar() {
+    const now = new Date();
+    const month = now.getMonth(); // Current month (0-11)
+    const year = now.getFullYear(); // Current year
+
+    // Key dates (can be added to the calendar)
+    const keyDates = {
+        '12/25': 'Christmas'
+    };
+
+    // Get first day of the month and the number of days in the month
+    const firstDayOfMonth = new Date(year, month, 1).getDay();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+    // Calendar grid
+    const calendarDiv = document.getElementById('calendar');
+    calendarDiv.innerHTML = ''; // Clear the calendar
+
+    // Days of the week labels
+    const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    daysOfWeek.forEach(day => {
+        const dayDiv = document.createElement('div');
+        dayDiv.textContent = day;
+        calendarDiv.appendChild(dayDiv);
+    });
+
+    // Generate the empty days before the 1st of the month
+    for (let i = 0; i < firstDayOfMonth; i++) {
+        const emptyDiv = document.createElement('div');
+        calendarDiv.appendChild(emptyDiv);
+    }
+
+    // Generate calendar days
+    for (let day = 1; day <= daysInMonth; day++) {
+        const dayDiv = document.createElement('div');
+        dayDiv.textContent = day;
+
+        const formattedDate = `${month + 1}/${day}`;
+        if (keyDates[formattedDate]) {
+            dayDiv.classList.add('key-date');
+        }
+
+        if (day === now.getDate() && month === now.getMonth() && year === now.getFullYear()) {
+            dayDiv.classList.add('today');
+        }
+
+        calendarDiv.appendChild(dayDiv);
+    }
+}
+
+// Initialize the page
+function initializePage() {
+    updateDateTime();
+    generateCalendar();
+    setInterval(updateDateTime, 1000);
+}
+
+initializePage();
+</script>
+</body>
+</html>
